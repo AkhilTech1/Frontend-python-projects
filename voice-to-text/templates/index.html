@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speech to Text Transcriber</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="main-container">
+        <h1 class="heading">Speech to Text Transcription</h1>
+
+        <div class="mic-container">
+            <button id="mic-button" onclick="startRecording()">🎙️</button>
+        </div>
+
+        <div id="transcription-container" class="transcription-container">
+            <p id="transcription-text"></p>
+        </div>
+    </div>
+    
+    <p class="footer-text">Created by AKHIL DHANALAKOTA</p>
+    
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

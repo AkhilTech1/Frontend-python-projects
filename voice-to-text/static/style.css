@@ -1,0 +1,76 @@
+/* Reset Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body and overall background */
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f4f4; /* Light background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+/* Main container styling */
+.main-container {
+    text-align: center;
+    background: #ffffff; /* White background */
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1); /* Light shadow */
+    width: 350px;
+}
+
+/* Heading styling */
+.heading {
+    color: #333;
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+/* Mic button styling */
+.mic-container {
+    margin-bottom: 20px;
+}
+
+#mic-button {
+    font-size: 2rem;
+    color: #ffffff;
+    background: #007bff; /* Blue background */
+    border: none;
+    padding: 15px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+#mic-button:hover {
+    background: #0056b3; /* Darker blue on hover */
+}
+
+/* Transcription container */
+.transcription-container {
+    margin-top: 20px;
+    background: rgba(0, 0, 0, 0.05); /* Light gray background */
+    padding: 20px;
+    border-radius: 8px;
+    color: #333;
+    font-size: 1.2rem;
+    display: none;
+}
+
+/* Footer styling */
+.footer-text {
+    font-family: "Times New Roman", Times, serif;
+    font-size: 10px;
+    color: #333;
+    position: absolute;
+    bottom: 10px;
+    text-transform: uppercase;
+    width: 100%;
+    text-align: center;
+}
