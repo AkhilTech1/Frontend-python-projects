@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Forecasting Application</title>
+    <link rel="icon" type="image/png" href="icon.png">
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color: #aeb1b1;
+        }
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+        .weather-container {
+            position: relative;
+            z-index: 2;
+            background: rgba(210, 242, 242, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(85, 105, 64, 0.2);
+        }
+        .weather-icon {
+            font-size: 50px;
+        }
+        .main-heading {
+            position: absolute;
+            top: 20px;
+            width: 100%;
+            text-align: center;
+            font-size: 36px;
+            font-weight: bold;
+            color: rgba(56, 17, 17, 0.659);
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <canvas id="weatherCanvas"></canvas>
+    <h1 class="main-heading">SkyCast - Your Weather Companion 🌎</h1>
+
+    <div class="weather-container">
+        <h2>
+            SkyCast 🌦️
+            <img src="https://cdn-icons-png.flaticon.com/128/1163/1163661.png" alt="Weather Icon" 
+                 style="width: 40px; height: 40px; vertical-align: middle;">
+        </h2>        
+        <input type="text" id="city" placeholder="Enter city name">
+        <button onclick="getWeather()">Know Weather Condition</button>
+        <h3 id="location"></h3>
+        <p id="temperature"></p>
+        <p id="condition"></p>
+        <div id="weatherIcon" class="weather-icon"></div>
+    </div>
+
+    <!-- Rain Sound -->
+    <audio id="rainSound" loop>
+        <source src="rain.ogg" type="audio/ogg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <script>
+        const canvas = document.getElementById("weatherCanvas");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        const rainSound = document.getElementById("rainSound");
+
+        let isRaining = false; // Track rain animation
+        let rainAnimationFrame; // Store animation frame ID
+
+        function getWeather() {
+            const city = document.getElementById("city").value;
+            fetch(`https://api.weatherapi.com/v1/current.json?key=1d14d2a73f894c2884c70349252603&q=${city}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("location").innerText = `${data.location.name}, ${data.location.country}`;
+                    document.getElementById("temperature").innerText = `Temperature: ${data.current.temp_c}°C`;
+                    document.getElementById("condition").innerText = `Condition: ${data.current.condition.text}`;
+                    document.getElementById("weatherIcon").innerHTML = `<img src='${data.current.condition.icon}' alt='Weather icon'>`;
+
+                    ctx.clearRect(0, 0, canvas.width, canvas.height); // Reset background
+
+                    if (data.current.condition.text.toLowerCase().includes("rain")) {
+                        startRainEffect();
+                        rainSound.play();
+                    } else {
+                        stopRainEffect(); // Stop rain when switching to other weather
+                        rainSound.pause();
+                        rainSound.currentTime = 0; // Reset sound
+
+                        if (data.current.condition.text.toLowerCase().includes("cloud")) {
+                            startCloudEffect();
+                        } else {
+                            startSunEffect();
+                        }
+                    }
+                });
+        }
+
+        function startRainEffect() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            let raindrops = [];
+            for (let i = 0; i < 150; i++) {
+                raindrops.push({ 
+                    x: Math.random() * canvas.width, 
+                    y: Math.random() * canvas.height, 
+                    speed: Math.random() * 5 + 2 
+                });
+            }
+
+            isRaining = true; // Set flag to true
+
+            function animateRain() {
+                if (!isRaining) return; // Stop animation if flag is false
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = "rgba(0, 120, 255, 0.8)";
+                raindrops.forEach(drop => {
+                    ctx.fillRect(drop.x, drop.y, 2, 10);
+                    drop.y += drop.speed;
+                    if (drop.y > canvas.height) drop.y = 0;
+                });
+
+                // Random Lightning Effect
+                if (Math.random() < 0.005) {
+                    triggerLightning();
+                }
+
+                rainAnimationFrame = requestAnimationFrame(animateRain);
+            }
+            animateRain();
+        }
+
+        function stopRainEffect() {
+            isRaining = false; // Stop animation
+            cancelAnimationFrame(rainAnimationFrame); // Cancel rain animation
+            ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear rain effect
+        }
+
+        function triggerLightning() {
+            ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            setTimeout(() => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }, 100);
+        }
+
+        function startCloudEffect() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#B0C4DE"; // Light blue-gray
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function startSunEffect() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "yellow";
+            ctx.beginPath();
+            ctx.arc(canvas.width / 2, canvas.height / 2, 100, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    </script>
+</body>
+</html>
